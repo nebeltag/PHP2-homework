@@ -4,7 +4,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use GeekBrains\LevelTwo\Blog\{User, Post};
 use GeekBrains\LevelTwo\Person\{Name, Person};
-
+use GeekBrains\LevelTwo\Blog\Repositories\InMemoryUsersRepository;
+use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 
 
 // spl_autoload_register(
@@ -45,3 +46,19 @@ $post = new Post(
 );
 
 echo $post;
+
+$name2 = new Name('Коля', 'Николаев');
+$user2 = new User(2, $name2, 'User');
+$userRepository = new InMemoryUsersRepository();
+
+$userRepository->save($user);
+$userRepository->save($user2);
+
+try
+{
+   echo $userRepository->get(1);
+   echo $userRepository->get(2);
+   echo $userRepository->get(3);
+}catch(UserNotFoundException | Exception $e) {
+   echo $e->getMessage();
+}
