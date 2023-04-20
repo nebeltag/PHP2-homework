@@ -1,11 +1,11 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-
 use GeekBrains\LevelTwo\Blog\{User, Post, Comment};
 use GeekBrains\LevelTwo\Person\{Name, Person};
 use GeekBrains\LevelTwo\Blog\Repositories\InMemoryUsersRepository;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
+
+include __DIR__ . '/vendor/autoload.php';
 
 
 // spl_autoload_register(
@@ -22,49 +22,16 @@ use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 
 $faker = Faker\Factory::create('ru_Ru');
 
+$name = new Name(
+  $faker->firstName('female'),
+  $faker->lastName('female')
+);
 
-// echo $faker->name() . PHP_EOL;
-// echo $faker->realText(rand(100,200)) . PHP_EOL;
+$user = new User(
+  $faker->randomDigitNotNull(), 
+  $name, 
+  $faker->sentence(1));
 
-$name = new Name($faker->name());
-$user = new User(1, $name, "Admin");
-
-$name2 = new Name($faker->name());
-$user2 = new User(2, $name2, 'User');
-
-// echo $user;
-
-
-
-/*$person = new Person($name, new DateTimeImmutable());
-echo $person;
-
-$post = new Post(
-  1,
-  new Person(
-    new Name($user2),
-    new DateTimeImmutable(),
-  ),
-  'Всем привет!' . PHP_EOL
-);*/
-
-// $post = new Post (
-//   1, 
-//   $user2, 
-//   $faker->realText(rand(10,20)), 
-//   $faker->realText(rand(100,200))
-// );
-
-// echo $post;
-
-// $comment = new Comment (
-//    1,
-//    $user2,
-//    $post,
-//    $faker->realText(rand(20,50))
-// );
-
-// echo $comment;
 
 $route = $argv[1] ?? null;
 
@@ -74,7 +41,7 @@ switch ($route) {
     break;
   case 'post':
     $post = new Post (
-      1, 
+      $faker->randomDigitNotNull(), 
       $user, 
       $faker->realText(rand(10,20)), 
       $faker->realText(rand(100,200))
@@ -83,13 +50,13 @@ switch ($route) {
     break;
   case 'comment':
     $post = new Post (
-      1, 
+      $faker->randomDigitNotNull(), 
       $user, 
       $faker->realText(rand(10,20)), 
       $faker->realText(rand(100,200))
       );
     $comment = new Comment (
-      1,
+      $faker->randomDigitNotNull(),
       $user,
       $post,
       $faker->realText(rand(20,50))
