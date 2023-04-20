@@ -9,7 +9,7 @@ spl_autoload_register(
     $file = $className . ".php";
     // $file = "/some/path/" . $file;
     $file = str_replace(["\\", "_"], "/", $file);
-    $file = str_replace(["Doctrine/Common", "my/package/Class"], "src", $file);
+    $file = str_replace(["Doctrine/Common/", "my/package/Class/"], "src/", $file);
     var_dump($file);
     if(file_exists($file))
     {

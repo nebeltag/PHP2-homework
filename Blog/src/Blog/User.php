@@ -26,6 +26,7 @@ class User
   public function __toString(): string  
   {
     return "Юзер $this->id с именем $this->username и логином $this->login." .  PHP_EOL;
+    // return $this->username . PHP_EOL;
   }
 
   /**

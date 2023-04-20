@@ -2,27 +2,47 @@
 
 namespace GeekBrains\LevelTwo\Blog;
 
-use GeekBrains\LevelTwo\Person\Person;
-
 class Post 
 {
-  private int $id;
-  private Person $author;
-  private string $text;
+  private int $postId;
+  private User $postAuthor;
+  private string $postTitle;
+  private string $postText;
+  private int $postAuthorId;
 
   public function __construct(
-     int $id,
-     Person $author,
-     string $text
+     int $postId,
+     User $postAuthor,
+     string $postTitle,
+     string $postText
   )
   {
-     $this->id = $id;
-     $this->author = $author;
-     $this->text = $text;
+     $this->postId = $postId;
+     $this->postAuthor = $postAuthor;
+     $this->postTitle = $postTitle;
+     $this->postText = $postText;
+     $this->postAuthorId = $this->postAuthor->id();
+  }
+
+  // public function getPostAuthorId () : int
+  // {
+  //    return $this->postAuthor->id();
+  // }
+
+  /**
+   * Get the value of postId
+   */ 
+  public function getPostId()
+  {
+    return $this->postId;
   }
 
   public function __toString()
   {
-    return $this->author . 'пишет: ' . $this->text;
+    return $this->postAuthor . 'пишет: ' . PHP_EOL . $this->postTitle . PHP_EOL . 
+    '>>>' . $this->postText . PHP_EOL;
+    
   }
+
+  
 }
