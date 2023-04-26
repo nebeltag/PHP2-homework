@@ -4,6 +4,7 @@
 -- ALTER TABLE users ADD uuid TEXT;
 
 -- DROP TABLE users;
+
 CREATE TABLE users (
 uuid TEXT NOT NULL
 CONSTRAINT uuid_primary_key PRIMARY KEY,
