@@ -5,9 +5,11 @@ require_once __DIR__ . '/vendor/autoload.php';
 use GeekBrains\LevelTwo\Person\Name;
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\Post;
+use GeekBrains\LevelTwo\Blog\Comment;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use GeekBrains\LevelTwo\Blog\Commands\CreateUserCommand;
 use GeekBrains\LevelTwo\Blog\Commands\Arguments;
 
@@ -15,6 +17,7 @@ $connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
 
 $usersRepository = new SqliteUsersRepository($connection);
 $postsRepository = new SqlitePostsRepository($connection);
+$commentsRepository = new SqliteCommentsRepository($connection);
 
 //Сохраняем новых юзеров в базу
 // $usersRepository->save(new User(UUID::random(), new Name('Ivan', 'Nikitin'), 'admin'));
@@ -35,6 +38,11 @@ try {
   // $usersRepository->getByUsername('ivan2'), 'ааа', 'ввв'));  
   // echo $postsRepository->get(new UUID('a29b6ea1-5732-4bd1-86d0-455a79351a13'));
   // echo $postsRepository->getByPostTitle('123');
+
+  $commentsRepository->save(new Comment(UUID::random(), 
+    $usersRepository->getByUsername('admin'),
+    $postsRepository->getByPostTitle('123'),     
+    'asdfgh'));
 
 } catch(Exception $e) {
   echo $e->getMessage();
