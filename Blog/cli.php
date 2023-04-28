@@ -39,10 +39,11 @@ try {
   // echo $postsRepository->get(new UUID('a29b6ea1-5732-4bd1-86d0-455a79351a13'));
   // echo $postsRepository->getByPostTitle('123');
 
-  $commentsRepository->save(new Comment(UUID::random(), 
-    $usersRepository->getByUsername('admin'),
-    $postsRepository->getByPostTitle('123'),     
-    'asdfgh'));
+  // $commentsRepository->save(new Comment(UUID::random(), 
+  //   $usersRepository->getByUsername('admin'),
+  //   $postsRepository->getByPostTitle('123'),     
+  //   'asdfgh'));
+  echo $commentsRepository->get(new UUID('fb704218-ecf6-438a-ae7c-7306500b9d8d'));
 
 } catch(Exception $e) {
   echo $e->getMessage();

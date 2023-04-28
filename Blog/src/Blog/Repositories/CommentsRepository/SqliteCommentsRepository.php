@@ -41,10 +41,10 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
   public function get(UUID $uuid): Comment
   {
     
-   $statement = $this->connection->prepare('SELECT * FROM posts WHERE uuid = :uuid');
+   $statement = $this->connection->prepare('SELECT * FROM comments WHERE uuid = :uuid');
    $statement->execute([':uuid' => (string)$uuid]);
 
-   return $this->getPost($statement, $uuid);
+   return $this->getComment($statement, $uuid);
   //  $result = $statement->fetch(PDO::FETCH_ASSOC);
 
   //  if ($result === false) {
@@ -59,35 +59,41 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
   //  );
   }
 
-  public function getByPostTitle(string $postTitle): Post
-  {
-    $statement = $this->connection->prepare(
-    'SELECT * FROM posts WHERE title = :title'
-   );
-    $statement->execute([
-    ':title' => $postTitle,
-   ]);
-    return $this->getPost($statement, $postTitle);
-  }
+  // public function getByPostTitle(string $postTitle): Post
+  // {
+  //   $statement = $this->connection->prepare(
+  //   'SELECT * FROM posts WHERE title = :title'
+  //  );
+  //   $statement->execute([
+  //   ':title' => $postTitle,
+  //  ]);
+  //   return $this->getComment($statement, $postTitle);
+  // }
 
-  public function getPost(PDOStatement $statement, string $errorString) : Post
+  public function getComment(PDOStatement $statement, string $errorString) : Comment
   {
     $result = $statement->fetch(PDO::FETCH_ASSOC);
     $usersRepository = new SqliteUsersRepository($this->connection);
-
+    $postsRepository = new SqlitePostsRepository($this->connection);
 
     if ($result === false) {
-    throw new PostNotFoundException(
-    "Cannot get post: $errorString"
+    throw new CommentNotFoundException(
+    "Cannot get comment: $errorString"
     );
     }
-    return new Post(
+    return new Comment(
     new UUID($result['uuid']),
+
     //вернем uuid  из user
     $usersRepository->get(new UUID($result['author_uuid']))->uuid(),
     //или вернем uuid строкой
     // $result['author_uuid'],
-    $result['title'],
+
+    //вернем uuid  из post
+    $postsRepository->get(new UUID($result['post_uuid']))->uuid(),
+    //или вернем uuid строкой
+    // $result['post_uuid'],    
+    
     $result['text']
     );
   }

@@ -13,8 +13,8 @@ class Comment
 
   public function __construct(
      private UUID $commentId,
-     private User $commentAuthor,
-     private Post $commentedPost,
+     private User|string $commentAuthor,
+     private Post|string $commentedPost,
      private string $commentText
   )
   {
@@ -27,7 +27,7 @@ class Comment
 
   public function __toString()
   {
-    return $this->commentAuthor . 'пишет коммент: ' . $this->commentText;
+    return $this->commentAuthor . ' пишет коммент: ' . $this->commentText;
     
   }
 
