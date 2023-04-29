@@ -42,7 +42,7 @@ class Name
    */ 
   public function setFirstName(string $firstName) : void
   {
-    $this->firstName = $firstName;
+    $this->firstName = $firstName;    
   }
 
   /**
@@ -60,6 +60,6 @@ class Name
    */ 
   public function setLastName(string $lastName) : void
   {
-    $this->lastName = $lastName;    
+    $this->lastName = $lastName;   
   }
 }

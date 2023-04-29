@@ -6,30 +6,35 @@ use GeekBrains\LevelTwo\Person\Name;
 
 class User
 {
-  private int $id;
-  private Name $username;
-  private string $login;
+  private UUID $uuid;
+  private Name $name;
+  private string $username;
 
   /**
-   * @param int $id
-   * @param Name $username
-   * @param string $login
+   * @param UUID $uuid
+   * @param string $name
+   * @param string $username
    */
 
-  public function __construct(int $id, Name $username, string $login)
+  public function __construct(UUID $uuid, Name $name, string $username)
   {
-    $this->id = $id;
+    $this->uuid = $uuid;
+    $this->name = $name;
     $this->username = $username;
-    $this->login = $login;
   }
 
-  
+  public function __toString(): string  
+  {
+    return "Юзер $this->uuid с именем $this->name и логином $this->username." .  PHP_EOL;
+    // return $this->username . PHP_EOL;
+  }
+
   /**
    * Get the value of id
    */ 
-  public function id() : int
+  public function uuid() : UUID
   {
-    return $this->id;
+    return $this->uuid;
   }
 
   /**
@@ -37,13 +42,31 @@ class User
    *
    * @return  self
    */ 
-  public function setId($id) : void
-  {
-    $this->id = $id;
+  // public function setId($id)
+  // {
+  //   $this->id = $id;
 
+  //   return $this;
+  // }
+
+  /**
+   * @return Name
+   */ 
+  public function getName() : Name
+  {
+    return $this->name;
   }
 
-  
+  /**
+   * Set the value of username
+   *
+   * @return  self
+   */ 
+  public function setName(Name $name) : void
+  {
+    $this->name = $name;    
+  }
+
   /**
    * Get the value of username
    */ 
@@ -57,36 +80,8 @@ class User
    *
    * @return  self
    */ 
-  public function setUsername(Name $username) : void
+  public function setUsername($username) : void
   {
-    $this->username = $username;
-
-    
+    $this->username = $username;    
   }
-
-  /**
-   * Get the value of login
-   */ 
-  public function getLogin() : string
-  {
-    return $this->login;
-  }
-
-  /**
-   * Set the value of login
-   *
-   * @return  self
-   */ 
-  public function setLogin(string $login) : void
-  {
-    $this->login = $login;
-
-  }
-
-  public function __toString(): string  
-  {
-    return "Юзер $this->id с именем $this->username и логином $this->login." .  PHP_EOL;
-    // return $this->username . PHP_EOL;
-  }
-
 }

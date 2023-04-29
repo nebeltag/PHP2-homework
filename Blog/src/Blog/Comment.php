@@ -12,9 +12,9 @@ class Comment
   
 
   public function __construct(
-     private int $commentId,
-     private User $commentAuthor,
-     private Post $commentedPost,
+     private UUID $commentId,
+     private User|string $commentAuthor,
+     private Post|string $commentedPost,
      private string $commentText
   )
   {
@@ -27,14 +27,14 @@ class Comment
 
   public function __toString()
   {
-    return $this->commentAuthor . 'пишет коммент: ' . $this->commentText;
+    return $this->commentAuthor . ' пишет коммент: ' . $this->commentText;
     
   }
 
   /**
    * Get the value of commentId
    */ 
-  public function getCommentId() : int
+  public function uuid() : UUID
   {
     return $this->commentId;
   }
@@ -44,10 +44,10 @@ class Comment
    *
    * @return  self
    */ 
-  public function setCommentId(int $commentId) : void
-  {
-    $this->commentId = $commentId;   
-  }
+  // public function setCommentId(int $commentId) : void
+  // {
+  //   $this->commentId = $commentId;   
+  // }
 
   /**
    * Get the value of commentAuthor

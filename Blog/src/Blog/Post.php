@@ -4,15 +4,21 @@ namespace GeekBrains\LevelTwo\Blog;
 
 class Post 
 {
-  private int $postId;
-  private User $postAuthor;
+  private UUID $postId;
+  private User|string $postAuthor;
   private string $postTitle;
   private string $postText;
   
+  /**
+   * @param UUID $uuid
+   * @param User|string $postAuthor
+   * @param string $postTitle
+   * @param string $postText
+   */
 
   public function __construct(
-     int $postId,
-     User $postAuthor,
+     UUID $postId,
+     User|string $postAuthor,
      string $postTitle,
      string $postText
   )
@@ -26,7 +32,7 @@ class Post
 
   public function __toString()
   {
-    return $this->postAuthor . 'пишет: ' . PHP_EOL . $this->postTitle . PHP_EOL . 
+    return $this->postAuthor . ' пишет: ' . PHP_EOL . $this->postTitle . PHP_EOL . 
     '>>>' . $this->postText . PHP_EOL;
     
   }  
@@ -34,7 +40,7 @@ class Post
   /**
    * Get the value of postId
    */ 
-  public function getPostId() : int
+  public function uuid() : UUID
   {
     return $this->postId;
   }
@@ -44,11 +50,11 @@ class Post
    *
    * @return  self
    */ 
-  public function setPostId(int $postId) : void
-  {
-    $this->postId = $postId;
+  // public function setPostId(int $postId) : void
+  // {
+  //   $this->postId = $postId;
     
-  }
+  // }
 
   
   /**
