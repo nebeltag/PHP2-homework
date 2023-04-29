@@ -71,6 +71,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
   public function getPost(PDOStatement $statement, string $errorString) : Post
   {
     $result = $statement->fetch(PDO::FETCH_ASSOC);
+    
     $usersRepository = new SqliteUsersRepository($this->connection);
 
 
