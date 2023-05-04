@@ -80,6 +80,8 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     "Cannot get post: $errorString"
     );
     }
+    
+    
     return new Post(
     new UUID($result['uuid']),
     //вернем uuid  из user

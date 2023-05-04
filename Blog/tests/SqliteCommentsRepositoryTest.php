@@ -73,30 +73,31 @@ class SqliteCommentsRepositoryTest extends TestCase
           $repository->get(new UUID('a29b6ea1-5732-4bd1-86d0-455a79351a23'));
      }
 
-     // public function testItGetPostByUuid() : void 
-     // {
-     //      $connectionStub = $this->createStub(PDO::class);
-     //      $statementMock = $this->createMock(PDOStatement::class);
+     public function testItGetCommentByUuid() : void 
+     {
+          $connectionStub = $this->createStub(PDO::class);
+          $statementMock = $this->createMock(PDOStatement::class);
 
-     //      $statementMock->method('fetch')->willReturn(
-     //           [                     
-     //                ':uuid' => 'a29b6ea1-5732-4bd1-86d0-455a79351a23',
-     //                ':first_name' => 'Ivan',
-     //                ':last_name' => 'Nikitin',
-     //                ':username' => 'ivan123',
-     //                ':author_uuid' => 'a29b6ea1-5732-4bd1-86d0-455a79351a23',
-     //                ':title' => 'title',
-     //                ':text' => 'text'                  
+          $statementMock->method('fetch')->willReturn(
+               [                     
+                    'uuid' => 'a29b6ea1-5732-4bd1-86d0-455a79351a23',
+                    'first_name' => 'Ivan',
+                    'last_name' => 'Nikitin',
+                    'username' => 'ivan123',
+                    'author_uuid' => 'a29b6ea1-5732-4bd1-86d0-455a79351a23',
+                    'title' => 'title',
+                    'text' => 'text',
+                    'post_uuid' => 'a29b6ea1-5732-4bd1-86d0-455a79351a23'                   
                     
-     //           ]
-     //      );
-     //      $connectionStub->method('prepare')->willReturn($statementMock);
+               ]
+          );
+          $connectionStub->method('prepare')->willReturn($statementMock);
 
-     //      $postRepository = new SqlitePostsRepository($connectionStub);
-     //      $post = $postRepository->get(new UUID('a29b6ea1-5732-4bd1-86d0-455a79351a23'));
+          $commentRepository = new SqliteCommentsRepository($connectionStub);
+          $comment = $commentRepository->get(new UUID('a29b6ea1-5732-4bd1-86d0-455a79351a23'));
 
-     //      $this->assertSame('a29b6ea1-5732-4bd1-86d0-455a79351a23', (string)$post->uuid());
-     // }
+          $this->assertSame('a29b6ea1-5732-4bd1-86d0-455a79351a23', (string)$comment->uuid());
+     }
 
 
 }
