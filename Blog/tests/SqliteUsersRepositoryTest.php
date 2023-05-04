@@ -52,7 +52,7 @@ class SqliteUsersRepositoryTest extends TestCase
             ':uuid' => '123e4567-e89b-12d3-a456-426614174000',
             ':username' => 'ivan123',
             ':first_name' => 'Ivan',
-            ':last_name' => 'Nikitin',
+            ':last_name' => 'Nikitin'
       ]);
 
       // 3. При вызове метода prepare стаб подключения

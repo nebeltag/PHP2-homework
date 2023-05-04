@@ -6,15 +6,15 @@ use PDO;
 use PDOStatement;
 
 use GeekBrains\LevelTwo\Person\Name;
-use GeekBrains\LevelTwo\Blog\{User, UUID, Post};
-use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
-use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
+use GeekBrains\LevelTwo\Blog\{User, UUID, Post, Comment};
+use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
+use GeekBrains\LevelTwo\Blog\Exceptions\CommentNotFoundException;
 
 use PHPUnit\Framework\TestCase;
 
-class SqlitePostsRepositoryTest extends TestCase 
+class SqliteCommentsRepositoryTest extends TestCase 
 {
-     public function testItSavesPostToDataBase() : void 
+     public function testItSavesCommentToDataBase() : void 
      {
           $connectionStub = $this->createStub(PDO::class);
           $statementMock = $this->createMock(PDOStatement::class);
@@ -25,15 +25,15 @@ class SqlitePostsRepositoryTest extends TestCase
           ->expects($this->once()) 
           ->method('execute') 
           ->with([ 
-            ':title' => 'title',
-            ':text' => 'text',
+            ':post_uuid' => '123e4567-e89b-12d3-a456-426614174000',
+            ':text' => 'commentText',
             ':uuid' => '123e4567-e89b-12d3-a456-426614174000',
             ':author_uuid' => '123e4567-e89b-12d3-a456-426614174000'
       ]);
 
           $connectionStub->method('prepare')->willReturn($statementMock);
 
-          $repository = new SqlitePostsRepository($connectionStub);
+          $repository = new SqliteCommentsRepository($connectionStub);
 
           $user = new User( 
                new UUID('123e4567-e89b-12d3-a456-426614174000'),
@@ -41,17 +41,24 @@ class SqlitePostsRepositoryTest extends TestCase
                'ivan123'
           );
 
+          $post = new Post(
+              new UUID('123e4567-e89b-12d3-a456-426614174000'),
+              $user,
+              'title',
+              'text'    
+          );
+
           $repository->save(
-               new Post(
-                new UUID('123e4567-e89b-12d3-a456-426614174000'),
-                $user,
-                'title',
-                'text'    
+              new Comment(
+              new UUID('123e4567-e89b-12d3-a456-426614174000'),
+              $user,
+              $post,
+              'commentText'    
                )
           );
      }
 
-     public function testItThrowsAnExceptionWhenPostNotFound() : void 
+     public function testItThrowsAnExceptionWhenCommentNotFound() : void 
      {
           $connectionMock = $this->createStub(PDO::class);
           $statementStub = $this->createStub(PDOStatement::class);
@@ -59,9 +66,9 @@ class SqlitePostsRepositoryTest extends TestCase
           $statementStub->method('fetch')->willReturn(false);
           $connectionMock->method('prepare')->willReturn($statementStub);
   
-          $repository = new SqlitePostsRepository($connectionMock);
-          $this->expectException(PostNotFoundException::class);
-          $this->expectExceptionMessage('Cannot get post: a29b6ea1-5732-4bd1-86d0-455a79351a23');
+          $repository = new SqliteCommentsRepository($connectionMock);
+          $this->expectException(CommentNotFoundException::class);
+          $this->expectExceptionMessage('Cannot get comment: a29b6ea1-5732-4bd1-86d0-455a79351a23');
   
           $repository->get(new UUID('a29b6ea1-5732-4bd1-86d0-455a79351a23'));
      }
