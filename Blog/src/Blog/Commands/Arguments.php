@@ -2,6 +2,8 @@
 
 namespace GeekBrains\LevelTwo\Blog\Commands;
 
+use GeekBrains\LevelTwo\Blog\Exceptions\ArgumentsException;
+
 class Arguments 
 {
   private array $arguments = [];
