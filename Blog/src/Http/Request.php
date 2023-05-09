@@ -44,9 +44,7 @@ class Request
     {
         if (!array_key_exists($param, $this->get)) {
            // Если нет такого параметра в запросе - бросаем исключение
-           throw new HttpException(
-           "No such query param in the request: $param"
-           );
+           throw new HttpException("No such query param in the request: $param");
         } 
 
       $value = trim($this->get[$param]);
