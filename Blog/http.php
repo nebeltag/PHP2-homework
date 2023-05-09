@@ -7,7 +7,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 $request = new Request($_GET, $_SERVER);
 
 $path = $request->path();
-$name = $request->query('Cookie');
+$name = $request->query('name');
 $header = $request->header('cookie');
 
 
