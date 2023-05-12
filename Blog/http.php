@@ -1,15 +1,13 @@
 <?php
 
-use GeekBrains\LevelTwo\Http\Request;
-use GeekBrains\LevelTwo\Http\SuccessfulResponse;
-use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
-use GeekBrains\LevelTwo\Http\Actions\Posts\CreatePost;
-use GeekBrains\LevelTwo\Http\Actions\Posts\FindByUuid;
+use GeekBrains\LevelTwo\Http\{Request, SuccessfulResponse, ErrorResponse};
+use GeekBrains\LevelTwo\Blog\Exceptions\{AppException, HttpException};
+use GeekBrains\LevelTwo\Http\Actions\Posts\{CreatePost, FindByUuid};
 use GeekBrains\LevelTwo\Http\Actions\Users\{FindByUsername, CreateUser};
-use GeekBrains\LevelTwo\Http\ErrorResponse;
-use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
+use GeekBrains\LevelTwo\Http\Actions\Comments\CreateComment;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -87,6 +85,7 @@ $request = new Request($_GET, $_SERVER, file_get_contents('php://input'));
                 new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
              )
            ),
+           
          ],
          'POST' => [
           // Добавили новый маршрут
@@ -100,6 +99,17 @@ $request = new Request($_GET, $_SERVER, file_get_contents('php://input'));
              ),
             '/users/create' => new CreateUser(
                new SqliteUsersRepository(
+                  new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+               ),
+            ),
+            '/posts/comment' => new CreateComment(
+               new SqliteCommentsRepository(
+                  new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+               ),
+               new SqliteUsersRepository(
+                  new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+               ),
+               new SqlitePostsRepository(
                   new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
                ),
             ),

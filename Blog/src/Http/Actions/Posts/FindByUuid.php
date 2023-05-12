@@ -12,7 +12,7 @@ use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
-use GeekBrains\LevelTwo\Blog\User;
+
 
 class FindByUuid implements ActionInterface
 {

@@ -23,11 +23,11 @@ class User
     $this->username = $username;
   }
 
-  /*public function __toString(): string  
+  public function __toString(): string  
   {
     return "Юзер $this->uuid с именем $this->name и логином $this->username." .  PHP_EOL;
     // return $this->username . PHP_EOL;
-  }*/
+  }
 
   /**
    * Get the value of id
