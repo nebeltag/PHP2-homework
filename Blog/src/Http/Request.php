@@ -3,6 +3,7 @@
 namespace GeekBrains\LevelTwo\Http;
 
 use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
+use GeekBrains\LevelTwo\Blog\Exceptions\JsonException;
 
 class Request
 {
@@ -11,9 +12,64 @@ class Request
       // аргумент, соответствующий суперглобальной переменной $_GET
     private array $get,
       // аргумент, соответствующий суперглобальной переменной $_SERVER
-    private array $server
+    private array $server,
+    // Добавляем свойство для хранения тела запроса
+    private string $body,
     ) {
     }
+
+    public function method(): string
+   {
+    // В суперглобальном массиве $_SERVER
+    // HTTP-метод хранится под ключом REQUEST_METHOD
+    if (!array_key_exists('REQUEST_METHOD', $this->server)) {
+    // Если мы не можем получить метод - бросаем исключение
+       throw new HttpException('Cannot get method from the request');
+    }
+        return $this->server['REQUEST_METHOD'];
+   }
+
+
+    // Метод для получения массива,
+    // сформированного из json-форматированного
+    // тела запроса
+    public function jsonBody(): array
+    {
+      try {
+       // Пытаемся декодировать json
+       $data = json_decode($this->body,
+       // Декодируем в ассоциативный массив
+       associative: true,
+       // Бросаем исключение при ошибке
+       flags: JSON_THROW_ON_ERROR
+       );
+      } catch (JsonException) {
+         throw new HttpException("Cannot decode json body");
+         }
+
+      if (!is_array($data)) {
+           throw new HttpException("Not an array/object in json body");
+      }
+         return $data;
+    }
+
+    // Метод для получения отдельного поля
+    // из json-форматированного тела запроса
+    public function jsonBodyField(string $field): mixed
+    {
+      $data = $this->jsonBody();
+      if (!array_key_exists($field, $data)) {
+        throw new HttpException("No such field: $field");
+      }
+
+      if (empty($data[$field])) {
+        throw new HttpException("Empty field: $field");
+      }
+
+      return $data[$field];
+}
+
+
     
     // Метод для получения пути запроса
     // Напрмер, для http://example.com/some/page?x=1&y=acb
@@ -40,9 +96,12 @@ class Request
     // определённого параметра строки запроса
     // Напрмер, для http://example.com/some/page?x=1&y=acb
     // значением параметра x будет строка '1'
+    /**
+     * @throws HttpException
+     */
     public function query(string $param): string
     {
-        if (!array_key_exists($param, $this->get)) {
+        if (!array_key_exists($param, $this->get)) {         
            // Если нет такого параметра в запросе - бросаем исключение
            throw new HttpException("No such query param in the request: $param");
         } 
