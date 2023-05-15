@@ -32,18 +32,19 @@ $commentsRepository = new SqliteCommentsRepository($connection);
 try {
   // $usersRepository->save(new User(UUID::random(), new Name('Ivan', 'Nikitin'), 'admin'));
   // echo $usersRepository->get(new UUID('2818619e-d094-4f66-8cf5-bba83dc955bb'));
-  // echo $usersRepository->getByUsername('admin');
+  //echo $usersRepository->getByUsername('admin');
 
   // $postsRepository->save(new Post(UUID::random(), 
   // $usersRepository->getByUsername('ivan2'), 'ааа', 'ввв'));  
-  echo $postsRepository->get(new UUID('a29b6ea1-5732-4bd1-86d0-455a79351a13'));
-  // echo $postsRepository->getByPostTitle('123');
+  // echo $postsRepository->get(new UUID('a29b6ea1-5732-4bd1-86d0-455a79351a13'));
+  //echo $postsRepository->getByPostTitle('123');
 
   // $commentsRepository->save(new Comment(UUID::random(), 
   //   $usersRepository->getByUsername('admin'),
   //   $postsRepository->getByPostTitle('123'),     
-  //   'asdfgh'));
-  // echo $commentsRepository->get(new UUID('fb704218-ecf6-438a-ae7c-7306500b9d8d'));
+  //   '456789'));
+  //echo $commentsRepository->get(new UUID('59ec89ef-04db-45d1-b25c-861d64bca02e'));
+   $commentsRepository->deleteComment(new UUID('59ec89ef-04db-45d1-b25c-861d64bca02e'));
 
 } catch(Exception $e) {
   echo $e->getMessage();

@@ -60,7 +60,7 @@ class Post
   /**
    * Get the value of postAuthor
    */ 
-  public function getPostAuthor() : User
+  public function getPostAuthor() : User | string
   {
     return $this->postAuthor;
   }
