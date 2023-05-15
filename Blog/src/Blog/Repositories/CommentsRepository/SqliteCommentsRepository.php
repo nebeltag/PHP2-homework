@@ -104,13 +104,13 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
    $statement = $this->connection->prepare('DELETE FROM comments WHERE uuid = :uuid');
    $statement->execute([':uuid' => (string)$uuid]);
 
-   $result = $statement->fetch(PDO::FETCH_ASSOC);
+  //  $result = $statement->fetch(PDO::FETCH_ASSOC);
 
 
-   if ($result === false) {
-   throw new CommentNotFoundException(
-   "Cannot find comment: $uuid"
-   );
-   }
+  //  if ($result === false) {
+  //  throw new CommentNotFoundException(
+  //  "Cannot find comment: $uuid"
+  //  );
+  //  }
   }
 }

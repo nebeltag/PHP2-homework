@@ -2,7 +2,7 @@
 
 use GeekBrains\LevelTwo\Http\{Request, SuccessfulResponse, ErrorResponse};
 use GeekBrains\LevelTwo\Blog\Exceptions\{AppException, HttpException};
-use GeekBrains\LevelTwo\Http\Actions\Posts\{CreatePost, FindByUuid};
+use GeekBrains\LevelTwo\Http\Actions\Posts\{CreatePost, FindByUuid, DeletePost};
 use GeekBrains\LevelTwo\Http\Actions\Users\{FindByUsername, CreateUser};
 use GeekBrains\LevelTwo\Http\Actions\Comments\{CreateComment, DeleteComment};
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
@@ -118,8 +118,14 @@ $request = new Request($_GET, $_SERVER, file_get_contents('php://input'));
 
          'DELETE' => [
             // Добавили новый маршрут
-             '/posts' => new DeleteComment(
+             '/comments' => new DeleteComment(
                new SqliteCommentsRepository(
+                  new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+               ),
+            ),
+            // Добавили новый маршрут
+            '/posts' => new DeletePost(
+               new SqlitePostsRepository(
                   new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
                ),
             ),
