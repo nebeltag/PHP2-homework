@@ -36,4 +36,9 @@ class InMemoryUsersRepository implements UsersRepositoryInterface
 
        throw new UserNotFoundException("User not found: $id");
    }
+
+   public function getByUsername(string $username): User
+   {
+    
+   }
 }

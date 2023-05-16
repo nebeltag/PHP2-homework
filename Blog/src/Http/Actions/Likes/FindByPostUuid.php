@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\LevelTwo\Http\Actions\Posts;
+namespace GeekBrains\LevelTwo\Http\Actions\Likes;
 
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
@@ -8,18 +8,17 @@ use GeekBrains\LevelTwo\Http\HttpException;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
-use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
-use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
-use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
+use GeekBrains\LevelTwo\Blog\Exceptions\LikeNotFoundException;
+use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
 
 
-class FindByUuid implements ActionInterface
+class FindByPostUuid implements ActionInterface
 {
-    // Нам понадобится репозиторий статей,
+    // Нам понадобится репозиторий лайков,
     // внедряем его контракт в качестве зависимости
     public function __construct(
-      private PostsRepositoryInterface $postsRepository
+      private LikesRepositoryInterface $likesRepository
     ) {
     }
 
@@ -37,21 +36,22 @@ class FindByUuid implements ActionInterface
 
         try {
         // Пытаемся найти статью в репозитории
-        $post = $this->postsRepository->get(new UUID($postUuid));
-        } catch (PostNotFoundException $e) {
+        $like = $this->likesRepository->getByPostUuid($postUuid);
+        } catch (LikeNotFoundException $e) {
         // Если статья не найдена -
         // возвращаем неуспешный ответ
         return new ErrorResponse($e->getMessage());
         }
 
-        
+
+       
         // Возвращаем успешный ответ
         return new SuccessfulResponse([
-        'authorUuid' => $post->getPostAuthor(),
-        'title' => $post->getPostTitle(),
-        'text' => $post->getPostText()
+        'uuid' => $like->uuid()->__toString(),
+        'post_uuid' => $like->getLikedPost(),
+        'author_uuid' => $like->getLikeAuthor()
         ]);
-        }
+    }
     
   
 

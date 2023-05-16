@@ -5,17 +5,91 @@ use GeekBrains\LevelTwo\Blog\Exceptions\{AppException, HttpException};
 use GeekBrains\LevelTwo\Http\Actions\Posts\{CreatePost, FindByUuid, DeletePost};
 use GeekBrains\LevelTwo\Http\Actions\Users\{FindByUsername, CreateUser};
 use GeekBrains\LevelTwo\Http\Actions\Comments\{CreateComment, DeleteComment};
+use GeekBrains\LevelTwo\Http\Actions\Likes\{CreateLike, DeleteLike, FindByPostUuid};
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
+use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\SqliteLikesRepository;
 
 
+// Подключаем файл bootstrap.php
+// и получаем настроенный контейнер
+$container = require __DIR__ . '/bootstrap.php';
+
+$request = new Request(
+  $_GET,
+  $_SERVER,
+  file_get_contents('php://input'),
+);
+
+try {
+   $path = $request->path();
+} catch (HttpException) {
+   (new ErrorResponse)->send();
+   return;
+}
+
+try {
+   $method = $request->method();
+} catch (HttpException) {
+  (new ErrorResponse)->send();
+  return;
+}
+
+// Ассоциируем маршруты с именами классов действий,
+// вместо готовых объектов
+$routes = [
+    'GET' => [
+       '/users/show' => FindByUsername::class,
+       '/posts/show' => FindByUuid::class,
+       '/likes/show' => FindByPostUuid::class,
+    ],
+    'POST' => [
+        '/posts/create' => CreatePost::class,
+        '/users/create' => CreateUser::class,
+        '/posts/comment' => CreateComment::class,
+        '/likes/create' => CreateLike::class
+    ],
+    'DELETE' => [
+      '/comments' => DeleteComment::class,
+      '/posts' => DeletePost::class,
+      '/likes' => DeleteLike::class
+    ],
+];
+
+if (!array_key_exists($method, $routes)) {
+   (new ErrorResponse("Route not found: $method $path"))->send();
+   return;
+}
+
+if (!array_key_exists($path, $routes[$method])) {
+   (new ErrorResponse("Route not found: $method $path"))->send();
+   return;
+}
+
+// Получаем имя класса действия для маршрута
+$actionClassName = $routes[$method][$path];
+
+// С помощью контейнера
+// создаём объект нужного действия
+$action = $container->get($actionClassName);
+try {
+   $response = $action->handle($request);
+   } catch (AppException $e) {
+   (new ErrorResponse($e->getMessage()))->send();
+   }
+   $response->send();
+
+
+
+//http.php без контейнера
+/*
 require_once __DIR__ . '/vendor/autoload.php';
 $request = new Request($_GET, $_SERVER, file_get_contents('php://input'));
 
 // $path = $request->path();
 // $name = $request->query("name");
-// $header = $request->header('cookie');
+// $header = $request->header('cookie');*/
 
 
 // echo "$path\n";
@@ -47,6 +121,7 @@ $request = new Request($_GET, $_SERVER, file_get_contents('php://input'));
     // ),
     ];*/
 
+/*
  try {
     // Пытаемся получить путь из запроса
     $path = $request->path();
@@ -161,7 +236,7 @@ $request = new Request($_GET, $_SERVER, file_get_contents('php://input'));
   }
 
   // Отправляем ответ
-//   $response->send();
+//   $response->send();*/
   
     
 
