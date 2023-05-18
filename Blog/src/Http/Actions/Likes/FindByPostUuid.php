@@ -36,21 +36,35 @@ class FindByPostUuid implements ActionInterface
 
         try {
         // Пытаемся найти статью в репозитории
-        $like = $this->likesRepository->getByPostUuid($postUuid);
+        $likes = $this->likesRepository->getByPostUuid(new UUID($postUuid));
         } catch (LikeNotFoundException $e) {
         // Если статья не найдена -
         // возвращаем неуспешный ответ
         return new ErrorResponse($e->getMessage());
         }
 
-
        
+       $response = [];
+        
+        foreach($likes as $el => $like){
+          $likeUuid = $like->uuid()->__toString();
+          $postUuid = $like->getLikedPost()->__toString();
+          $authorUuid = $like->getLikeAuthor()->__toString();
+          $response []= 
+          ["uuid" => "$likeUuid",
+          'post_uuid' => "$postUuid",
+          'author_uuid' => "$authorUuid"];
+        }
+
         // Возвращаем успешный ответ
-        return new SuccessfulResponse([
-        'uuid' => $like->uuid()->__toString(),
-        'post_uuid' => $like->getLikedPost(),
-        'author_uuid' => $like->getLikeAuthor()
-        ]);
+          return new SuccessfulResponse(         
+          [  $response      
+          ]);
+      
+      
+      
+
+      
     }
     
   

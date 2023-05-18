@@ -6,6 +6,7 @@ namespace GeekBrains\LevelTwo\Blog\Repositories\LikesRepository;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Like;
 use GeekBrains\LevelTwo\Blog\Exceptions\LikeNotFoundException;
+use GeekBrains\LevelTwo\Blog\Exceptions\LikeAllReadyExists;
 use GeekBrains\LevelTwo\Blog\Exceptions\InvalidArgumentException;
 use \PDO;
 use \PDOStatement;
@@ -33,7 +34,26 @@ class SqliteLikesRepository implements LikesRepositoryInterface
   ]);
   }
 
-  
+  public function checkUserLikeForPostExists($postUuid, $authorUuid): void
+  {
+
+    $statement = $this->connection->prepare(
+      'SELECT * FROM likes WHERE post_uuid = :post_uuid AND author_uuid = :author_uuid'
+      );
+    
+    $statement->execute([
+    ':post_uuid' => $postUuid,
+    ':author_uuid' => $authorUuid
+    ]);
+
+    $isExisted = $statement->fetch();
+
+    if ($isExisted){
+      throw new LikeAllReadyExists(
+        'The users like for this post is allready exists'
+      );
+    }
+  }
 
   public function get(UUID $uuid): Like
   {
@@ -41,55 +61,45 @@ class SqliteLikesRepository implements LikesRepositoryInterface
    $statement = $this->connection->prepare('SELECT * FROM likes WHERE uuid = :uuid');
    $statement->execute([':uuid' => (string)$uuid]);
 
-   
-
    return $this->getLike($statement, $uuid);
-  //  $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-  //  if ($result === false) {
-  //  throw new UserNotFoundException(
-  //  "Cannot get user: $uuid"
-  //  );
-  //  }
-  //   return new User(
-  //   new UUID($result['uuid']),
-  //   new Name($result['first_name'], $result['last_name']),
-  //   $result['username']
-  //  );
   }
 
   
-  public function getByPostUuid(string $postUuid): Like
+  public function getByPostUuid(UUID $uuid): array
   {
     $statement = $this->connection->prepare(
     'SELECT * FROM likes WHERE post_uuid = :post_uuid'
    );
     $statement->execute([
-    ':post_uuid' => $postUuid,
+    ':post_uuid' => (string)$uuid,
    ]);
 
-   
-    return $this->getLike($statement, $postUuid);
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!$result) {
+      throw new LikeNotFoundException(
+      "No likes to post with uuid = : " . $uuid
+      );
+    }
+
+    // var_dump($result);
+    // die();
+
+    $likes = [];
+    foreach ($result as $like){
+       $likes[] = new Like(
+        new UUID($like['uuid']),
+        new UUID($like['post_uuid']),
+        new UUID($like['author_uuid'])
+       );
+    }
+
+    // var_dump($likes);
+    // die();
+    return $likes;
     
   }
   
-  public function getByPostAndAuthor(Like $like): bool
-  {
-    $statement = $this->connection->prepare(
-    'SELECT * FROM likes WHERE post_uuid = :post_uuid AND author_uuid = :author_uuid'
-   );
-    $statement->execute([
-      ':post_uuid' => (string)$like->getLikedPost(),
-      ':author_uuid' => (string)$like->getLikeAuthor()
-   ]);
-
-    $result = $statement->fetch(PDO::FETCH_ASSOC);
-   
-    if($result){
-      return false;
-    }
-  }
-
   public function getLike(PDOStatement $statement, string $errorString) : Like
   {
     $result = $statement->fetch(PDO::FETCH_ASSOC);

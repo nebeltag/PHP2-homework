@@ -8,8 +8,8 @@ class Like
   
   public function __construct(
      private UUID $likeId,
-     private string $likedPost,
-     private string $likeAuthor    
+     private UUID $likedPost,
+     private UUID $likeAuthor    
   )
   {
          
@@ -42,7 +42,7 @@ class Like
   /**
    * Get the value of likeAuthor
    */ 
-  public function getLikeAuthor() : string
+  public function getLikeAuthor() : UUID
   {
     return $this->likeAuthor;
   }
@@ -52,7 +52,7 @@ class Like
    *
    * @return  self
    */ 
-  public function setLikeAuthor(string $likeAuthor) : void
+  public function setLikeAuthor(UUID $likeAuthor) : void
   {
     $this->likeAuthor = $likeAuthor;    
   }
@@ -60,7 +60,7 @@ class Like
      /**
       * Get the value of likedPost
       */ 
-     public function getLikedPost() : string
+     public function getLikedPost() : UUID
      {
           return $this->likedPost;
      }
@@ -70,7 +70,7 @@ class Like
       *
       * @return  self
       */ 
-     public function setLikedPost(string $likedPost) : void
+     public function setLikedPost(UUID $likedPost) : void
      {
           $this->likedPost = $likedPost;
          
