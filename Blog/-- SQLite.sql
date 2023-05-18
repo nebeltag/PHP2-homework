@@ -22,10 +22,17 @@
 -- text TEXT NOT NULL
 -- );
 
-CREATE TABLE comments (
+-- CREATE TABLE comments (
+-- uuid TEXT NOT NULL
+-- CONSTRAINT uuid_primary_key PRIMARY KEY,
+-- post_uuid TEXT NOT NULL,
+-- author_uuid TEXT NOT NULL,
+-- text TEXT NOT NULL
+-- );
+
+CREATE TABLE likes (
 uuid TEXT NOT NULL
 CONSTRAINT uuid_primary_key PRIMARY KEY,
 post_uuid TEXT NOT NULL,
-author_uuid TEXT NOT NULL,
-text TEXT NOT NULL
+author_uuid TEXT NOT NULL
 );
