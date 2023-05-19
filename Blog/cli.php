@@ -3,18 +3,28 @@
 use GeekBrains\LevelTwo\Blog\Commands\CreateUserCommand;
 use GeekBrains\LevelTwo\Blog\Commands\Arguments;
 use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
+use Psr\Log\LoggerInterface;
 
 
 // Подключаем файл bootstrap.php
 // и получаем настроенный контейнер
 $container = require __DIR__ . '/bootstrap.php';
 
+// Получаем объект логгера из контейнера
+$logger = $container->get(LoggerInterface::class);
+
 // При помощи контейнера создаём команду
-$command = $container->get(CreateUserCommand::class);
+
 try {
+$command = $container->get(CreateUserCommand::class);
 $command->handle(Arguments::fromArgv($argv));
-} catch (AppException $e) {
-echo "{$e->getMessage()}\n";
+} catch (Exception $e) {
+  // Логируем информацию об исключении.
+  // Объект исключения передаётся логгеру
+  // с ключом "exception".
+  // Уровень логирования – ERROR
+  $logger->error($e->getMessage(), ['exception' => $e]);
+  echo $e->getMessage();
 }
 
 

@@ -15,6 +15,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
+use Psr\Log\LoggerInterface;
 
 class CreatePost implements ActionInterface
 {
@@ -22,6 +23,7 @@ class CreatePost implements ActionInterface
    public function __construct(
      private PostsRepositoryInterface $postsRepository,
      private UsersRepositoryInterface $usersRepository,
+     private LoggerInterface $logger
    ) {
      }
 
@@ -59,6 +61,9 @@ class CreatePost implements ActionInterface
 
        // Сохраняем новую статью в репозитории
        $this->postsRepository->save($post);
+
+       // Логируем UUID новой статьи
+       $this->logger->info("Post created: $newPostUuid");
 
        // Возвращаем успешный ответ,
        // содержащий UUID новой статьи

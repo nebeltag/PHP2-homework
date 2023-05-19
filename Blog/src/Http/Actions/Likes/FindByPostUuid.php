@@ -47,13 +47,13 @@ class FindByPostUuid implements ActionInterface
        $response = [];
         
         foreach($likes as $el => $like){
-          $likeUuid = $like->uuid()->__toString();
-          $postUuid = $like->getLikedPost()->__toString();
-          $authorUuid = $like->getLikeAuthor()->__toString();
+          // $likeUuid = (string)$like->uuid();
+          // $postUuid = (string)$like->getLikedPost();
+          // $authorUuid = (string)$like->getLikeAuthor();
           $response []= 
-          ["uuid" => "$likeUuid",
-          'post_uuid' => "$postUuid",
-          'author_uuid' => "$authorUuid"];
+          ["uuid" => (string)$like->uuid(),
+          'post_uuid' => (string)$like->getLikedPost(),
+          'author_uuid' => (string)$like->getLikeAuthor()];
         }
 
         // Возвращаем успешный ответ

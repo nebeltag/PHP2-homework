@@ -6,10 +6,14 @@ use GeekBrains\LevelTwo\Blog\Exceptions\InvalidArgumentException;
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
+use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
+use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
+use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
+use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Exceptions\LikeAllReadyExists;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Like;
@@ -20,6 +24,8 @@ class CreateLike implements ActionInterface
    // Внедряем репозиторий лайков
    public function __construct(
      private LikesRepositoryInterface $likesRepository,
+     private PostsRepositoryInterface $postsRepository,
+     private UsersRepositoryInterface $usersRepository
      
    ) {
      }
@@ -33,7 +39,26 @@ class CreateLike implements ActionInterface
       } catch (HttpException $e) {
         return new ErrorResponse($e->getMessage());
        }
-      
+      //Проверяем uuid статьи
+      try{
+        $this->postsRepository->get(new UUID($postUuid));
+      }catch(PostNotFoundException $e){
+        return new ErrorResponse($e->getMessage());
+      }
+
+      //Проверяем uuid юзера
+      try{
+        $this->usersRepository->get(new UUID($authorUuid));
+      }catch(UserNotFoundException $e){
+        return new ErrorResponse($e->getMessage());
+      }
+
+      try{
+        $this->usersRepository->get(new UUID($authorUuid));
+      }catch(UserNotFoundException $e){
+        return new ErrorResponse($e->getMessage());
+      }
+
       //Проверяем наличие лайка автора к статье
       try {
        $this->likesRepository->checkUserLikeForPostExists($postUuid, $authorUuid);
