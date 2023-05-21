@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\LevelTwo\Commands;
+namespace GeekBrains\Blog\UnitTests\Commands;
 
 use GeekBrains\LevelTwo\Blog\Commands\{Arguments, CreateUserCommand};
 use GeekBrains\LevelTwo\Blog\Exceptions\{CommandException,UserNotFoundException,

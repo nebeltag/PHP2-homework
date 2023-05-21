@@ -14,6 +14,7 @@ use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
+use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
 use Psr\Log\LoggerInterface;
 
@@ -22,13 +23,26 @@ class CreatePost implements ActionInterface
    // Внедряем репозитории статей и пользователей
    public function __construct(
      private PostsRepositoryInterface $postsRepository,
+
      private UsersRepositoryInterface $usersRepository,
+
+     // Вместо контракта репозитория пользователей
+     // внедряем контракт идентификации
+     private IdentificationInterface $identification,
+
+
      private LoggerInterface $logger
    ) {
      }
 
    public function handle(Request $request): Response
    {
+
+       // Идентифицируем пользователя -
+       // автора статьи
+       $user = $this->identification->user($request);
+
+    /*
        // Пытаемся создать UUID пользователя из данных запроса
        try {
          $authorUuid = new UUID($request->jsonBodyField('author_uuid'));
@@ -42,7 +56,7 @@ class CreatePost implements ActionInterface
        } catch (UserNotFoundException $e) {
           return new ErrorResponse($e->getMessage());
          }
-
+    */
        // Генерируем UUID для новой статьи
        $newPostUuid = UUID::random();
 
@@ -51,7 +65,8 @@ class CreatePost implements ActionInterface
          // из данных запроса
          $post = new Post(
          $newPostUuid,
-         $this->usersRepository->get($authorUuid),
+         $user,
+        //  $this->usersRepository->get($authorUuid),
          $request->jsonBodyField('title'),
          $request->jsonBodyField('text'),
          );

@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\LevelTwo\tests\Actions;
+namespace GeekBrains\Blog\UnitTests\Actions;
 
 use GeekBrains\LevelTwo\Http\Actions\Users\FindByUsername;
 use GeekBrains\LevelTwo\Http\ErrorResponse;

@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\LevelTwo;
+namespace GeekBrains\Blog\UnitTests;
 
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;

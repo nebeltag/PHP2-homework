@@ -1,6 +1,6 @@
 <?php
 
-// namespace GeekBrains\Blog\UnitTests;
+namespace GeekBrains\Blog\UnitTests;
 // ./vendor/bin/phpunit tests --testdox --color
 use PHPUnit\Framework\TestCase;
 
