@@ -11,6 +11,7 @@ use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 use GeekBrains\LevelTwo\Blog\Exceptions\LikeNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
+use Psr\Log\LoggerInterface;
 
 
 class FindByPostUuid implements ActionInterface
@@ -18,12 +19,16 @@ class FindByPostUuid implements ActionInterface
     // Нам понадобится репозиторий лайков,
     // внедряем его контракт в качестве зависимости
     public function __construct(
-      private LikesRepositoryInterface $likesRepository
+      private LikesRepositoryInterface $likesRepository,
+      private LoggerInterface $logger
     ) {
     }
 
     public function handle (Request $request) : Response
     {
+      
+      $this->logger->info("Find likes started");
+
       try {
         // Пытаемся получить искомый uuid статьи из запроса
         $postUuid = $request->query('uuid');
@@ -40,6 +45,7 @@ class FindByPostUuid implements ActionInterface
         } catch (LikeNotFoundException $e) {
         // Если статья не найдена -
         // возвращаем неуспешный ответ
+        $this->logger->warning("No any likes found to post: $postUuid");
         return new ErrorResponse($e->getMessage());
         }
 

@@ -12,6 +12,8 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use PHPUnit\Framework\TestCase;
+use GeekBrains\Blog\UnitTests\DummyLogger;
+
 
 class FindByUsernameActionTest extends TestCase
 {
@@ -35,7 +37,7 @@ class FindByUsernameActionTest extends TestCase
      $usersRepository = $this->usersRepository([]);
 
      //Создаём объект действия
-     $action = new FindByUsername($usersRepository);
+     $action = new FindByUsername($usersRepository, new DummyLogger());
 
      // Запускаем действие
      $response = $action->handle($request);
@@ -97,7 +99,7 @@ class FindByUsernameActionTest extends TestCase
 
        // Репозиторий пользователей по-прежнему пуст
        $usersRepository = $this->usersRepository([]);
-       $action = new FindByUsername($usersRepository);
+       $action = new FindByUsername($usersRepository,new DummyLogger());
        $response = $action->handle($request);
        $this->assertInstanceOf(ErrorResponse::class, $response);
        $this->expectOutputString('{"success":false,"reason":"Not found"}');
@@ -123,7 +125,7 @@ class FindByUsernameActionTest extends TestCase
       'ivan'
       ),
       ]);
-        $action = new FindByUsername($usersRepository);
+        $action = new FindByUsername($usersRepository, new DummyLogger());
         $response = $action->handle($request);
 
       // Проверяем, что ответ - удачный

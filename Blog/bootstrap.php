@@ -11,6 +11,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\SqliteLikesRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
 use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
 use GeekBrains\LevelTwo\Http\Auth\JsonBodyUuidIdentification;
+use GeekBrains\LevelTwo\Http\Auth\JsonBodyUsernameIdentification;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -62,12 +63,19 @@ $logger = (new Logger('blog'));
     );
     }
     
+//8.Добавляем аутентификатор по username в контейнер
+$container->bind(
+  IdentificationInterface::class,
+  JsonBodyUsernameIdentification::class
+  );
 
-//7.Добавляем аутентификатор в контейнер
+/*
+//7.Добавляем аутентификатор по uuid в контейнер
 $container->bind(
   IdentificationInterface::class,
   JsonBodyUuidIdentification::class
   );
+*/
 
 // 6.Добавляем логгер в контейнер
 $container->bind(

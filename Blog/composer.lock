@@ -1551,12 +1551,6 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "11bdd8961a56a24eb56f2fe533ca38a6d2267f18"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/11bdd8961a56a24eb56f2fe533ca38a6d2267f18",
-                "reference": "11bdd8961a56a24eb56f2fe533ca38a6d2267f18",
                 "reference": "67504d48750a345d427a6e653b46704599c15d3d"
             },
             "dist": {
@@ -2157,7 +2151,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-17T18:04:24+00:00""time": "2023-05-20T00:13:18+00:00"
+            "time": "2023-05-20T00:13:18+00:00"
         },
         {
             "name": "sebastian/cli-parser",

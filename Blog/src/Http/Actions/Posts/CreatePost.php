@@ -24,8 +24,6 @@ class CreatePost implements ActionInterface
    public function __construct(
      private PostsRepositoryInterface $postsRepository,
 
-     private UsersRepositoryInterface $usersRepository,
-
      // Вместо контракта репозитория пользователей
      // внедряем контракт идентификации
      private IdentificationInterface $identification,

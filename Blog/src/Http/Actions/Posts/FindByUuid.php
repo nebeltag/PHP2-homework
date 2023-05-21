@@ -12,6 +12,7 @@ use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
+use Psr\Log\LoggerInterface;
 
 
 class FindByUuid implements ActionInterface
@@ -19,12 +20,16 @@ class FindByUuid implements ActionInterface
     // Нам понадобится репозиторий статей,
     // внедряем его контракт в качестве зависимости
     public function __construct(
-      private PostsRepositoryInterface $postsRepository
+      private PostsRepositoryInterface $postsRepository,
+      private LoggerInterface $logger
     ) {
     }
 
     public function handle (Request $request) : Response
-    {
+    { 
+
+      $this->logger->info("Find post started");
+
       try {
         // Пытаемся получить искомый uuid статьи из запроса
         $postUuid = $request->query('uuid');
@@ -41,6 +46,7 @@ class FindByUuid implements ActionInterface
         } catch (PostNotFoundException $e) {
         // Если статья не найдена -
         // возвращаем неуспешный ответ
+        $this->logger->warning("Cannot get post : $postUuid");
         return new ErrorResponse($e->getMessage());
         }
 

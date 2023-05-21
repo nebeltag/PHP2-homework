@@ -10,18 +10,23 @@ use GeekBrains\LevelTwo\Http\Response;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class FindByUserName implements ActionInterface
 {
     // Нам понадобится репозиторий пользователей,
     // внедряем его контракт в качестве зависимости
     public function __construct(
-      private UsersRepositoryInterface $usersRepository
+      private UsersRepositoryInterface $usersRepository,
+      private LoggerInterface $logger
     ) {
     }
 
     public function handle (Request $request) : Response
     {
+
+      $this->logger->info("Find user started");
+      
       try {
         // Пытаемся получить искомое имя пользователя из запроса
         $username = $request->query('username');
@@ -38,6 +43,7 @@ class FindByUserName implements ActionInterface
         } catch (UserNotFoundException $e) {
         // Если пользователь не найден -
         // возвращаем неуспешный ответ
+        $this->logger->warning("Cannot get user : $username");
         return new ErrorResponse($e->getMessage());
         }
         // Возвращаем успешный ответ
