@@ -82,9 +82,7 @@ class SqliteLikesRepository implements LikesRepositoryInterface
       );
     }
 
-    // var_dump($result);
-    // die();
-
+    
     $likes = [];
     foreach ($result as $like){
        $likes[] = new Like(
@@ -94,8 +92,6 @@ class SqliteLikesRepository implements LikesRepositoryInterface
        );
     }
 
-    // var_dump($likes);
-    // die();
     return $likes;
     
   }
