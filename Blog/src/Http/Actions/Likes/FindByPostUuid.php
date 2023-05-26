@@ -11,6 +11,7 @@ use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 use GeekBrains\LevelTwo\Blog\Exceptions\LikeNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
+use Psr\Log\LoggerInterface;
 
 
 class FindByPostUuid implements ActionInterface
@@ -18,12 +19,16 @@ class FindByPostUuid implements ActionInterface
     // Нам понадобится репозиторий лайков,
     // внедряем его контракт в качестве зависимости
     public function __construct(
-      private LikesRepositoryInterface $likesRepository
+      private LikesRepositoryInterface $likesRepository,
+      private LoggerInterface $logger
     ) {
     }
 
     public function handle (Request $request) : Response
     {
+      
+      $this->logger->info("Find likes started");
+
       try {
         // Пытаемся получить искомый uuid статьи из запроса
         $postUuid = $request->query('uuid');
@@ -40,6 +45,7 @@ class FindByPostUuid implements ActionInterface
         } catch (LikeNotFoundException $e) {
         // Если статья не найдена -
         // возвращаем неуспешный ответ
+        $this->logger->warning("No any likes found to post: $postUuid");
         return new ErrorResponse($e->getMessage());
         }
 
@@ -47,13 +53,13 @@ class FindByPostUuid implements ActionInterface
        $response = [];
         
         foreach($likes as $el => $like){
-          $likeUuid = $like->uuid()->__toString();
-          $postUuid = $like->getLikedPost()->__toString();
-          $authorUuid = $like->getLikeAuthor()->__toString();
+          // $likeUuid = (string)$like->uuid();
+          // $postUuid = (string)$like->getLikedPost();
+          // $authorUuid = (string)$like->getLikeAuthor();
           $response []= 
-          ["uuid" => "$likeUuid",
-          'post_uuid' => "$postUuid",
-          'author_uuid' => "$authorUuid"];
+          ["uuid" => (string)$like->uuid(),
+          'post_uuid' => (string)$like->getLikedPost(),
+          'author_uuid' => (string)$like->getLikeAuthor()];
         }
 
         // Возвращаем успешный ответ

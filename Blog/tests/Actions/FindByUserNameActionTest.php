@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\LevelTwo\tests\Actions;
+namespace GeekBrains\Blog\UnitTests\Actions;
 
 use GeekBrains\LevelTwo\Http\Actions\Users\FindByUsername;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
@@ -12,45 +12,12 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use PHPUnit\Framework\TestCase;
+use GeekBrains\Blog\UnitTests\DummyLogger;
+
 
 class FindByUsernameActionTest extends TestCase
 {
-  // Запускаем тест в отдельном процессе
-
-  /**
-    * @runInSeparateProcess
-    * @preserveGlobalState disabled
-    */
-
-   // Тест, проверяющий, что будет возвращён неудачный ответ,
-   // если в запросе нет параметра username
-   public function testItReturnsErrorResponseIfNoUsernameProvided(): void
-   {
-     // Создаём объект запроса
-     // Вместо суперглобальных переменных
-     // передаём простые массивы
-     $request = new Request([], [], '');
-
-     // Создаём стаб репозитория пользователей
-     $usersRepository = $this->usersRepository([]);
-
-     //Создаём объект действия
-     $action = new FindByUsername($usersRepository);
-
-     // Запускаем действие
-     $response = $action->handle($request);
-
-     // Проверяем, что ответ - неудачный
-     $this->assertInstanceOf(ErrorResponse::class, $response);
-
-     // Описываем ожидание того, что будет отправлено в поток вывода
-     $this->expectOutputString('{"success":false,"reason":"No such query param
-      in the request: username"}');
-
-      // Отправляем ответ в поток вывода
-      $response->send();
-   }
-
+  
    // Функция, создающая стаб репозитория пользователей,
    // принимает массив "существующих" пользователей
    private function usersRepository(array $users): UsersRepositoryInterface
@@ -97,7 +64,7 @@ class FindByUsernameActionTest extends TestCase
 
        // Репозиторий пользователей по-прежнему пуст
        $usersRepository = $this->usersRepository([]);
-       $action = new FindByUsername($usersRepository);
+       $action = new FindByUsername($usersRepository,new DummyLogger());
        $response = $action->handle($request);
        $this->assertInstanceOf(ErrorResponse::class, $response);
        $this->expectOutputString('{"success":false,"reason":"Not found"}');
@@ -120,10 +87,11 @@ class FindByUsernameActionTest extends TestCase
       new User(
       UUID::random(),
       new Name('Ivan', 'Nikitin'),
-      'ivan'
+      'ivan',
+      
       ),
       ]);
-        $action = new FindByUsername($usersRepository);
+        $action = new FindByUsername($usersRepository, new DummyLogger());
         $response = $action->handle($request);
 
       // Проверяем, что ответ - удачный
@@ -134,6 +102,43 @@ class FindByUsernameActionTest extends TestCase
       $response->send();
       }
       
+      // Запускаем тест в отдельном процессе
+
+  /**
+    * @runInSeparateProcess
+    * @preserveGlobalState disabled
+    * @throws /JsonException
+    */
+
+   
+   // Тест, проверяющий, что будет возвращён неудачный ответ,
+   // если в запросе нет параметра username
+   public function testItReturnsErrorResponseIfNoUsernameProvided(): void
+   {
+     // Создаём объект запроса
+     // Вместо суперглобальных переменных
+     // передаём простые массивы
+     $request = new Request([], [], "");
+
+     // Создаём стаб репозитория пользователей
+     $usersRepository = $this->usersRepository([]);
+
+     //Создаём объект действия
+     $action = new FindByUsername($usersRepository, new DummyLogger());
+
+     // Запускаем действие
+     $response = $action->handle($request);
+
+     // Проверяем, что ответ - неудачный
+     $this->assertInstanceOf(ErrorResponse::class, $response);
+
+     // Описываем ожидание того, что будет отправлено в поток вывода
+     $this->expectOutputString('{"success":false,"reason":"No such query param in the request: username"}');
+
+      // Отправляем ответ в поток вывода
+      $response->send();
+      
+   }
 
 }
 

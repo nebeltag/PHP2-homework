@@ -18,6 +18,7 @@ use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\CommentsRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 class CreateComment implements ActionInterface
 {
@@ -25,13 +26,17 @@ class CreateComment implements ActionInterface
    public function __construct(
      private CommentsRepositoryInterface $commentsRepository,
      private UsersRepositoryInterface $usersRepository,
-     private PostsRepositoryInterface $postsRepository,         
+     private PostsRepositoryInterface $postsRepository,
+     private LoggerInterface $logger         
 
    ) {
      }
 
    public function handle(Request $request): Response
    {
+
+       $this->logger->info("Create comment started");
+
        // Пытаемся создать UUID пользователя из данных запроса
        try {
          $authorUuid = new UUID($request->jsonBodyField('author_uuid'));
@@ -78,6 +83,8 @@ class CreateComment implements ActionInterface
 
        // Сохраняем новую статью в репозитории
        $this->commentsRepository->save($comment);
+
+       $this->logger->info("Comment created: $newCommentUuid");
 
        // Возвращаем успешный ответ,
        // содержащий UUID новой статьи

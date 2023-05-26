@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\LevelTwo;
+namespace GeekBrains\Blog\UnitTests;
 
 use PDO;
 use PDOStatement;

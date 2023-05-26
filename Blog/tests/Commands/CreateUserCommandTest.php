@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\LevelTwo\Commands;
+namespace GeekBrains\Blog\UnitTests\Commands;
 
 use GeekBrains\LevelTwo\Blog\Commands\{Arguments, CreateUserCommand};
 use GeekBrains\LevelTwo\Blog\Exceptions\{CommandException,UserNotFoundException,
@@ -9,11 +9,26 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\{DummyUsersRepository,
 UsersRepositoryInterface};
 use GeekBrains\LevelTwo\Person\Name;
 use GeekBrains\LevelTwo\Blog\{User, UUID};
+use GeekBrains\Blog\UnitTests\DummyLogger;
 
 use PHPUnit\Framework\TestCase;
 
 class CreateUserCommandTest extends TestCase
 {  
+
+   public function testItRequiresPassword(): void
+   {
+      $command = new CreateUserCommand(
+       $this->makeUsersRepository(),
+       new DummyLogger()
+      );
+      $this->expectException(ArgumentsException::class);
+      $this->expectExceptionMessage('No such argument: password');
+      $command->handle(new Arguments(['username' => 'Ivan']));
+   }
+      
+
+
    // Способ 1. Проверяем наличие юзера с использованием stab(заглушка, чучело)
 
    // Проверяем, что команда создания пользователя бросает исключение,
@@ -24,7 +39,7 @@ class CreateUserCommandTest extends TestCase
       // Создаём объект команды
       // У команды одна зависимость - UsersRepositoryInterface
       // Передаём наш стаб в качестве реализации UsersRepositoryInterface
-      $command = new CreateUserCommand(new DummyUsersRepository());
+      $command = new CreateUserCommand(new DummyUsersRepository(), new DummyLogger());
 
       // Описываем тип ожидаемого исключения
       $this->expectException(CommandException::class);
@@ -32,7 +47,10 @@ class CreateUserCommandTest extends TestCase
       $this->expectExceptionMessage('User already exists: Ivan');
       
       // Запускаем команду с аргументами
-      $command->handle(new Arguments(['username' => 'Ivan']));
+      $command->handle(new Arguments([
+         'username' => 'Ivan',
+         'password' => '123'
+      ]));
    }
 
    //----------------------------------------------------------------------
@@ -65,14 +83,17 @@ class CreateUserCommandTest extends TestCase
         };
 
    // Передаём объект анонимного класса в качестве реализации UsersRepositoryInterface
-        $command = new CreateUserCommand($usersRepository);
+        $command = new CreateUserCommand($usersRepository, new DummyLogger());
          
    // Ожидаем, что будет брошено исключение
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage('No such argument: first_name');
 
    // Запускаем команду
-        $command->handle(new Arguments(['username' => 'Ivan']));
+        $command->handle(new Arguments([
+         'username' => 'Ivan',
+         'password' => '123'
+        ]));
    }
 
    //--------------------------------------------------------------
@@ -108,13 +129,14 @@ class CreateUserCommandTest extends TestCase
    public function testItRequiresLastName(): void
    {
      // Передаём в конструктор команды объект, возвращаемый нашей функцией
-     $command = new CreateUserCommand($this->makeUsersRepository());
+     $command = new CreateUserCommand($this->makeUsersRepository(), new DummyLogger());
 
      $this->expectException(ArgumentsException::class);
      $this->expectExceptionMessage('No such argument: last_name');
 
      $command->handle(new Arguments([
        'username' => 'Ivan',
+       'password' => '123',
        // Нам нужно передать имя пользователя,
        // чтобы дойти до проверки наличия фамилии
        'first_name' => 'Ivan',
@@ -159,13 +181,14 @@ class CreateUserCommandTest extends TestCase
       };
 
       // Передаём наш мок в команду
-      $command = new CreateUserCommand($usersRepository);
+      $command = new CreateUserCommand($usersRepository, new DummyLogger());
 
       // Запускаем команду
       $command->handle(new Arguments([
         'username' => 'Ivan',
         'first_name' => 'Ivan',
         'last_name' => 'Nikitin',
+        'password' => '123'
       ]));
 
       // Проверяем утверждение относительно мока,

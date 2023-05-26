@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\LevelTwo;
+namespace GeekBrains\Blog\UnitTests;
 
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
@@ -52,7 +52,8 @@ class SqliteUsersRepositoryTest extends TestCase
             ':uuid' => '123e4567-e89b-12d3-a456-426614174000',
             ':username' => 'ivan123',
             ':first_name' => 'Ivan',
-            ':last_name' => 'Nikitin'
+            ':last_name' => 'Nikitin',
+            ':password' => '123'
       ]);
 
       // 3. При вызове метода prepare стаб подключения
@@ -68,7 +69,8 @@ class SqliteUsersRepositoryTest extends TestCase
          // как и в описании мока
          new UUID('123e4567-e89b-12d3-a456-426614174000'),
          new Name('Ivan', 'Nikitin'),
-         'ivan123'
+         'ivan123',
+         '123'
          )
       );
     }

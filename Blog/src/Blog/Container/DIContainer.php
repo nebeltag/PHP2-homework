@@ -5,6 +5,7 @@ namespace GeekBrains\LevelTwo\Blog\Container;
 use GeekBrains\LevelTwo\Blog\Exceptions\NotFoundException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use Psr\Log\LoggerInterface;
 
 class DIContainer implements ContainerInterface
 {

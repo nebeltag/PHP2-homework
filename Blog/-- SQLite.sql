@@ -30,9 +30,20 @@
 -- text TEXT NOT NULL
 -- );
 
-CREATE TABLE likes (
-uuid TEXT NOT NULL
-CONSTRAINT uuid_primary_key PRIMARY KEY,
-post_uuid TEXT NOT NULL,
-author_uuid TEXT NOT NULL
+-- CREATE TABLE likes (
+-- uuid TEXT NOT NULL
+-- CONSTRAINT uuid_primary_key PRIMARY KEY,
+-- post_uuid TEXT NOT NULL,
+-- author_uuid TEXT NOT NULL
+-- );
+
+-- ALTER TABLE users ADD password TEXT;
+
+CREATE TABLE tokens (
+token TEXT NOT NULL
+CONSTRAINT token_primary_key
+PRIMARY KEY,
+user_uuid TEXT NOT NULL,
+expires_on TEXT NOT NULL
 );
+
