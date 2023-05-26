@@ -3,6 +3,7 @@
 namespace GeekBrains\LevelTwo\Http\Actions\Posts;
 
 use GeekBrains\LevelTwo\Blog\Exceptions\InvalidArgumentException;
+use GeekBrains\LevelTwo\Blog\Exceptions\AuthException;
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
@@ -15,6 +16,8 @@ use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
+use GeekBrains\LevelTwo\Http\Auth\AuthentificationInterface;
+use GeekBrains\LevelTwo\Http\Auth\TokenAuthentificationInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
 use Psr\Log\LoggerInterface;
 
@@ -26,7 +29,7 @@ class CreatePost implements ActionInterface
 
      // Вместо контракта репозитория пользователей
      // внедряем контракт идентификации
-     private IdentificationInterface $identification,
+     private TokenAuthentificationInterface $authentification,
 
 
      private LoggerInterface $logger
@@ -38,8 +41,11 @@ class CreatePost implements ActionInterface
 
        // Идентифицируем пользователя -
        // автора статьи
-       $user = $this->identification->user($request);
-
+       try{
+           $user = $this->authentification->user($request);
+       }catch (AuthException $e){
+         return new ErrorResponse($e->getMessage());
+       }
     /*
        // Пытаемся создать UUID пользователя из данных запроса
        try {

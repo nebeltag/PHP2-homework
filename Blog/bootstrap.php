@@ -10,8 +10,15 @@ use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\CommentsRepositoryI
 use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\SqliteLikesRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\LikesRepositoryInterface;
 use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
+use GeekBrains\LevelTwo\Http\Auth\AuthentificationInterface;
+use GeekBrains\LevelTwo\Http\Auth\PasswordAuthentification;
 use GeekBrains\LevelTwo\Http\Auth\JsonBodyUuidIdentification;
 use GeekBrains\LevelTwo\Http\Auth\JsonBodyUsernameIdentification;
+use GeekBrains\LevelTwo\Http\Auth\PasswordAuthentificationInterface;
+use GeekBrains\LevelTwo\Blog\Repositories\AuthTokensRepository\AuthTokensRepositoryInterface;
+use GeekBrains\LevelTwo\Blog\Repositories\AuthTokensRepository\SqliteAuthTokensRepository;
+use GeekBrains\LevelTwo\Http\Auth\TokenAuthentificationInterface;
+use GeekBrains\LevelTwo\Http\Auth\BearerTokenAuthentification;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -62,7 +69,32 @@ $logger = (new Logger('blog'));
     new StreamHandler("php://stdout")
     );
     }
+
     
+      
+
+$container->bind(
+  TokenAuthentificationInterface::class,
+  BearerTokenAuthentification::class
+  );
+
+$container->bind(
+  PasswordAuthentificationInterface::class,
+  PasswordAuthentification::class
+  );
+
+$container->bind(
+  AuthTokensRepositoryInterface::class,
+  SqliteAuthTokensRepository::class
+  );
+          
+    
+//9.Добавляем аутентификатор по паролю в контейнер
+$container->bind(
+  AuthentificationInterface::class,
+  PasswordAuthentification::class
+  );
+
 //8.Добавляем аутентификатор по username в контейнер
 $container->bind(
   IdentificationInterface::class,

@@ -13,7 +13,7 @@ use GeekBrains\LevelTwo\Blog\UUID;
 use Psr\Log\LoggerInterface;
 
 
-//php cli.php username=ivan first_name=Ivan last_name=Nikitin
+//php cli.php username=ivan first_name=Ivan last_name=Nikitin password=123
 
 class CreateUserCommand
 {
@@ -37,6 +37,9 @@ class CreateUserCommand
 
     $username = $arguments->get('username');
 
+       // Вычисляем SHA-256-хеш пароля
+    // $hash = hash('sha256', $password);
+
     // Проверяем, существует ли пользователь в репозитории
     if ($this->userExists($username)) {
 
@@ -48,19 +51,24 @@ class CreateUserCommand
     throw new CommandException("User already exists: $username");
     }
 
-    $uuid = UUID::random();
+    // Создаём объект пользователя
+    // Функция createFrom сама создаст UUID
+    // и захеширует пароль
+    $user = User::createFrom(
+       $username,
+       $arguments->get('password'),
+       new Name(
+          $arguments->get('first_name'),
+          $arguments->get('last_name')
+         )
+     );
+  
 
       // Сохраняем пользователя в репозиторий
-    $this->usersRepository->save(new User(
-      $uuid,
-      new Name(
-           $arguments->get('first_name'), 
-           $arguments->get('last_name')),
-      $username,
-     ));
+    $this->usersRepository->save($user);
 
      // Логируем информацию о новом пользователе
-     $this->logger->info("User created: $uuid");
+     $this->logger->info("User created:" . $user->uuid());
 
     }
     

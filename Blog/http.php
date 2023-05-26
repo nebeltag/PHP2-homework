@@ -10,6 +10,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\SqliteLikesRepository;
+use GeekBrains\LevelTwo\Http\Actions\Auth\LogIn;
 use Psr\Log\LoggerInterface;
 
 
@@ -55,6 +56,7 @@ $routes = [
        '/likes/show' => FindByPostUuid::class,
     ],
     'POST' => [
+        '/login' => LogIn::class,
         '/posts/create' => CreatePost::class,
         '/users/create' => CreateUser::class,
         '/posts/comment' => CreateComment::class,
@@ -89,7 +91,7 @@ try {
    $logger->error($e->getMessage(), ['exception' => $e]);
 
    (new ErrorResponse($e->getMessage()))->send();
-    die();
+    return;
    }
    $response->send();
 

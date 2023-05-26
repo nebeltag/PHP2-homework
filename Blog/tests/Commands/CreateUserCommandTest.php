@@ -15,6 +15,20 @@ use PHPUnit\Framework\TestCase;
 
 class CreateUserCommandTest extends TestCase
 {  
+
+   public function testItRequiresPassword(): void
+   {
+      $command = new CreateUserCommand(
+       $this->makeUsersRepository(),
+       new DummyLogger()
+      );
+      $this->expectException(ArgumentsException::class);
+      $this->expectExceptionMessage('No such argument: password');
+      $command->handle(new Arguments(['username' => 'Ivan']));
+   }
+      
+
+
    // Способ 1. Проверяем наличие юзера с использованием stab(заглушка, чучело)
 
    // Проверяем, что команда создания пользователя бросает исключение,
@@ -33,7 +47,10 @@ class CreateUserCommandTest extends TestCase
       $this->expectExceptionMessage('User already exists: Ivan');
       
       // Запускаем команду с аргументами
-      $command->handle(new Arguments(['username' => 'Ivan']));
+      $command->handle(new Arguments([
+         'username' => 'Ivan',
+         'password' => '123'
+      ]));
    }
 
    //----------------------------------------------------------------------
@@ -73,7 +90,10 @@ class CreateUserCommandTest extends TestCase
         $this->expectExceptionMessage('No such argument: first_name');
 
    // Запускаем команду
-        $command->handle(new Arguments(['username' => 'Ivan']));
+        $command->handle(new Arguments([
+         'username' => 'Ivan',
+         'password' => '123'
+        ]));
    }
 
    //--------------------------------------------------------------
@@ -116,6 +136,7 @@ class CreateUserCommandTest extends TestCase
 
      $command->handle(new Arguments([
        'username' => 'Ivan',
+       'password' => '123',
        // Нам нужно передать имя пользователя,
        // чтобы дойти до проверки наличия фамилии
        'first_name' => 'Ivan',
@@ -167,6 +188,7 @@ class CreateUserCommandTest extends TestCase
         'username' => 'Ivan',
         'first_name' => 'Ivan',
         'last_name' => 'Nikitin',
+        'password' => '123'
       ]));
 
       // Проверяем утверждение относительно мока,
