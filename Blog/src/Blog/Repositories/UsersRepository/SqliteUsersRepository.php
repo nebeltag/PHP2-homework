@@ -79,12 +79,16 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     "Cannot get user: $errorString"
     );
     }
+
+         
     return new User(
     new UUID($result['uuid']),
     new Name($result['first_name'], $result['last_name']),
     $result['username'],
     $result['password']
     );
+
+    
   }
 
 
