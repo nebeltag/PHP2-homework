@@ -55,7 +55,7 @@ class BearerTokenAuthentification implements TokenAuthentificationInterface
 // Получаем UUID пользователя из токена
 
         $userUuid = $authToken->userUuid();
-       
+        
 // Ищем и возвращаем пользователя
 
         return $this->usersRepository->get($userUuid);

@@ -38,8 +38,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
    * */ 
 
   public function get(UUID $uuid): User
-  {
-    
+  {    
    $statement = $this->connection->prepare('SELECT * FROM users WHERE uuid = :uuid');
    $statement->execute([':uuid' => (string)$uuid]);
 
