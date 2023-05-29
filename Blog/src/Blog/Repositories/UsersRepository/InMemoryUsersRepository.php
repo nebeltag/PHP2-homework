@@ -41,4 +41,9 @@ class InMemoryUsersRepository implements UsersRepositoryInterface
    {
     
    }
+
+   public function deleteUser(UUID $uuid): void
+   {
+    
+   }
 }

@@ -28,4 +28,10 @@ class DummyUsersRepository implements UsersRepositoryInterface
       return new User(UUID::random(), new Name("first", "last"), "user123", "123");
      }
 
+     public function deleteUser(UUID $uuid): void
+     {
+            // throw new UserNotFoundException("Not found");
+            
+     }
+
 }

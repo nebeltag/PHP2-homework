@@ -3,7 +3,7 @@
 use GeekBrains\LevelTwo\Http\{Request, SuccessfulResponse, ErrorResponse};
 use GeekBrains\LevelTwo\Blog\Exceptions\{AppException, HttpException};
 use GeekBrains\LevelTwo\Http\Actions\Posts\{CreatePost, FindByUuid, DeletePost};
-use GeekBrains\LevelTwo\Http\Actions\Users\{FindByUsername, CreateUser};
+use GeekBrains\LevelTwo\Http\Actions\Users\{FindByUsername, CreateUser, DeleteUser};
 use GeekBrains\LevelTwo\Http\Actions\Comments\{CreateComment, DeleteComment};
 use GeekBrains\LevelTwo\Http\Actions\Likes\{CreateLike, DeleteLike, FindByPostUuid};
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
@@ -11,6 +11,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\SqliteLikesRepository;
 use GeekBrains\LevelTwo\Http\Actions\Auth\LogIn;
+use GeekBrains\LevelTwo\Http\Actions\Auth\LogOut;
 use Psr\Log\LoggerInterface;
 
 
@@ -57,12 +58,14 @@ $routes = [
     ],
     'POST' => [
         '/login' => LogIn::class,
+        '/logout' => LogOut::class,
         '/posts/create' => CreatePost::class,
         '/users/create' => CreateUser::class,
         '/posts/comment' => CreateComment::class,
         '/likes/create' => CreateLike::class
     ],
     'DELETE' => [
+      '/users' => DeleteUser::class,
       '/comments' => DeleteComment::class,
       '/posts' => DeletePost::class,
       '/likes' => DeleteLike::class

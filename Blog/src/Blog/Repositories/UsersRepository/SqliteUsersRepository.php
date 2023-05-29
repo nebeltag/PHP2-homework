@@ -86,9 +86,18 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     $result['username'],
     $result['password']
     );
-
     
   }
+
+  public function deleteUser(UUID $uuid): void
+  {
+    
+   $statement = $this->connection->prepare('DELETE FROM users WHERE users.uuid = :uuid');
+   $statement->execute([':uuid' => (string)$uuid]);
+
+  }
+
+
 
 
 }

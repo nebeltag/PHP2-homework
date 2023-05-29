@@ -26,7 +26,7 @@ class CreateComment implements ActionInterface
    // Внедряем репозитории статей, пользователей и комментов
    public function __construct(
      private CommentsRepositoryInterface $commentsRepository,
-     private TokenAuthentificationInterface $authentification,
+     private UsersRepositoryInterface $usersRepository,
      private PostsRepositoryInterface $postsRepository,
      private LoggerInterface $logger         
 
@@ -38,26 +38,26 @@ class CreateComment implements ActionInterface
 
        $this->logger->info("Create comment started");
 
-       // Пытаемся создать UUID пользователя из данных запроса
-      //  try {
-      //    $authorUuid = new UUID($request->jsonBodyField('author_uuid'));
-      //  } catch (HttpException | InvalidArgumentException $e) {
-      //     return new ErrorResponse($e->getMessage());
-      //   }
+       //Пытаемся создать UUID пользователя из данных запроса
+       try {
+         $authorUuid = new UUID($request->jsonBodyField('author_uuid'));
+       } catch (HttpException | InvalidArgumentException $e) {
+          return new ErrorResponse($e->getMessage());
+        }
       
       //Аутентифицируем юзера
-      try{
-        $authorUuid = $this->authentification->user($request);      
-      }catch(AuthException $e){
-        return new ErrorResponse($e->getMessage());
-      }
+      // try{
+      //   $authorUuid = $this->authentification->user($request);      
+      // }catch(AuthException $e){
+      //   return new ErrorResponse($e->getMessage());
+      // }
       
-       // Пытаемся найти пользователя в репозитории
-      //  try {
-      //     $this->usersRepository->get($authorUuid);
-      //  } catch (UserNotFoundException $e) {
-      //     return new ErrorResponse($e->getMessage());
-      //    }
+       //Пытаемся найти пользователя в репозитории
+       try {
+          $this->usersRepository->get($authorUuid);
+       } catch (UserNotFoundException $e) {
+          return new ErrorResponse($e->getMessage());
+         }
 
        // Пытаемся создать UUID статьи из данных запроса
         try {
@@ -81,8 +81,8 @@ class CreateComment implements ActionInterface
          // из данных запроса
          $comment = new Comment(
          $newCommentUuid,
-         $authorUuid,
-         $postUuid,         
+         $this->usersRepository->get($authorUuid),
+         $this->postsRepository->get($postUuid),     
          $request->jsonBodyField('text'),
          );
        } catch (HttpException $e) {

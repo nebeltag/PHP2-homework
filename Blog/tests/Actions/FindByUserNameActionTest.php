@@ -64,7 +64,7 @@ class FindByUsernameActionTest extends TestCase
 
        // Репозиторий пользователей по-прежнему пуст
        $usersRepository = $this->usersRepository([]);
-       $action = new FindByUsername($usersRepository,new DummyLogger());
+       $action = new FindByUsername($usersRepository, new DummyLogger());
        $response = $action->handle($request);
        $this->assertInstanceOf(ErrorResponse::class, $response);
        $this->expectOutputString('{"success":false,"reason":"Not found"}');
@@ -88,6 +88,7 @@ class FindByUsernameActionTest extends TestCase
       UUID::random(),
       new Name('Ivan', 'Nikitin'),
       'ivan',
+      '123'
       
       ),
       ]);

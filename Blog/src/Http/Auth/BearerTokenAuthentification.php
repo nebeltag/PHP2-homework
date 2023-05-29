@@ -28,7 +28,7 @@ class BearerTokenAuthentification implements TokenAuthentificationInterface
     /**
      * @throws AuthException
      */
-    public function user(Request $request): User
+    public function getAuthTokenString(Request $request): string
     {
         // Получаем HTTP-заголовок
         try {
@@ -41,7 +41,16 @@ class BearerTokenAuthentification implements TokenAuthentificationInterface
             throw new AuthException("Malformed token: [$header]");
         }
 // Отрезаем префикс Bearer
-        $token = mb_substr($header, strlen(self::HEADER_PREFIX));
+        return $token = mb_substr($header, strlen(self::HEADER_PREFIX));
+    }
+
+    /**
+     * @throws AuthException
+     */
+    public function user(Request $request): User
+    {
+        $token = $this->getAuthTokenString($request);
+
 // Ищем токен в репозитории
         try {
             $authToken = $this->authTokensRepository->get($token);
