@@ -38,8 +38,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
    * */ 
 
   public function get(UUID $uuid): User
-  {
-    
+  {    
    $statement = $this->connection->prepare('SELECT * FROM users WHERE uuid = :uuid');
    $statement->execute([':uuid' => (string)$uuid]);
 
@@ -79,13 +78,26 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     "Cannot get user: $errorString"
     );
     }
+
+         
     return new User(
     new UUID($result['uuid']),
     new Name($result['first_name'], $result['last_name']),
     $result['username'],
     $result['password']
     );
+    
   }
+
+  public function deleteUser(UUID $uuid): void
+  {
+    
+   $statement = $this->connection->prepare('DELETE FROM users WHERE users.uuid = :uuid');
+   $statement->execute([':uuid' => (string)$uuid]);
+
+  }
+
+
 
 
 }

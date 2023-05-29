@@ -120,6 +120,12 @@ class CreateUserCommandTest extends TestCase
           {
             throw new UserNotFoundException("Not found");
           }
+
+          public function deleteUser(UUID $uuid): void
+          {
+            throw new UserNotFoundException("Not found");
+            
+          }
        };
    }
    

@@ -11,6 +11,7 @@ use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
+use GeekBrains\LevelTwo\Http\Auth\TokenAuthentificationInterface;
 
 
 class DeletePost implements ActionInterface
@@ -18,12 +19,22 @@ class DeletePost implements ActionInterface
     // Нам понадобится репозиторий пользователей,
     // внедряем его контракт в качестве зависимости
     public function __construct(
-      private PostsRepositoryInterface $postsRepository
+      private PostsRepositoryInterface $postsRepository,
+      private TokenAuthentificationInterface $authentification,
     ) {
     }
 
     public function handle (Request $request) : Response
     {
+
+      // Идентифицируем пользователя -
+       // автора статьи
+       try{
+        $user = $this->authentification->user($request);
+       }catch (AuthException $e){
+          return new ErrorResponse($e->getMessage());
+       }
+
       try {
         // Пытаемся получить искомый uuid коммента из запроса
         $postUuid = $request->query('uuid');

@@ -110,8 +110,8 @@ class SqliteLikesRepository implements LikesRepositoryInterface
     
     return new Like(
     new UUID($result['uuid']),
-    $result['post_uuid'],
-    $result['author_uuid']
+    new UUID($result['post_uuid']),
+    new UUID($result['author_uuid'])
     );
   }
   

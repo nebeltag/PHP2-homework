@@ -3,7 +3,7 @@
 namespace GeekBrains\LevelTwo\Blog;
 
 use DateTimeImmutable;
-use GeekBrains\LevelTwo\Blog\UUID;
+
 
 class AuthToken
 {
@@ -16,6 +16,14 @@ class AuthToken
         private DateTimeImmutable $expiresOn
         ) {
           }
+
+    /**
+     * @param DateTimeImmutable $expiresOn
+     */
+    public function setExpiresOn(DateTimeImmutable $expiresOn): void
+    {
+        $this->expiresOn = $expiresOn;
+    }
 
     public function token(): string
     {

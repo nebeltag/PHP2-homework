@@ -8,6 +8,7 @@ use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
 use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
+use GeekBrains\LevelTwo\Blog\Exceptions\AuthException;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
@@ -15,6 +16,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\LikesRepository\LikesRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Exceptions\LikeAllReadyExists;
+use GeekBrains\LevelTwo\Http\Auth\TokenAuthentificationInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Like;
 use Psr\Log\LoggerInterface;
@@ -26,7 +28,7 @@ class CreateLike implements ActionInterface
    public function __construct(
      private LikesRepositoryInterface $likesRepository,
      private PostsRepositoryInterface $postsRepository,
-     private UsersRepositoryInterface $usersRepository,
+     private TokenAuthentificationInterface $authentification,
      private LoggerInterface $logger
      
    ) {
@@ -40,7 +42,7 @@ class CreateLike implements ActionInterface
        // Пытаемся получить данные из запроса
       try {
         $postUuid = $request->jsonBodyField('post_uuid');
-        $authorUuid = $request->jsonBodyField('author_uuid');
+        // $authorUuid = $request->jsonBodyField('author_uuid');
       } catch (HttpException $e) {
         return new ErrorResponse($e->getMessage());
        }
@@ -51,18 +53,24 @@ class CreateLike implements ActionInterface
         return new ErrorResponse($e->getMessage());
       }
 
-      //Проверяем uuid юзера
+      //Аутентифицируем юзера
       try{
-        $this->usersRepository->get(new UUID($authorUuid));
-      }catch(UserNotFoundException $e){
+        $authorUuid = $this->authentification->user($request)->uuid();      
+      }catch(AuthException $e){
         return new ErrorResponse($e->getMessage());
       }
 
-      try{
-        $this->usersRepository->get(new UUID($authorUuid));
-      }catch(UserNotFoundException $e){
-        return new ErrorResponse($e->getMessage());
-      }
+      // try{
+      //   $this->usersRepository->get(new UUID($authorUuid));
+      // }catch(UserNotFoundException $e){
+      //   return new ErrorResponse($e->getMessage());
+      // }
+
+      // try{
+      //   $this->usersRepository->get(new UUID($authorUuid));
+      // }catch(UserNotFoundException $e){
+      //   return new ErrorResponse($e->getMessage());
+      // }
 
       //Проверяем наличие лайка автора к статье
       try {
@@ -76,7 +84,7 @@ class CreateLike implements ActionInterface
 
        
       //Создаем объект лайка из данных запроса
-         
+      
       $like = new Like(
       $newLikeUuid,
       new UUID($postUuid),

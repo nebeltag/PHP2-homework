@@ -50,6 +50,8 @@ class SqliteAuthTokensRepository implements AuthTokensRepositoryInterface
 
     public function get(string $token): AuthToken
     {
+// print_r($token);
+
       try {
          $statement = $this->connection->prepare(
          'SELECT * FROM tokens WHERE token = ?'
