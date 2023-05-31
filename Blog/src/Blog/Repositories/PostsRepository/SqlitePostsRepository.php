@@ -6,9 +6,11 @@ use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Post;
 use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
+use GeekBrains\LevelTwo\Blog\Exceptions\PostsRepositoryException;
 use GeekBrains\LevelTwo\Blog\Exceptions\InvalidArgumentException;
 use \PDO;
 use \PDOStatement;
+use PDOException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 
 
@@ -95,9 +97,21 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
   public function deletePost(UUID $uuid): void
   {
+
+    try {
+      $statement = $this->connection->prepare(
+      'DELETE FROM posts WHERE uuid = ?'
+      );
+      $statement->execute([(string)$uuid]);
+      } catch (PDOException $e) {
+      throw new PostsRepositoryException(
+      $e->getMessage(), (int)$e->getCode(), $e
+      );
+    }
+      
     
-   $statement = $this->connection->prepare('DELETE FROM posts WHERE posts.uuid = :uuid');
-   $statement->execute([':uuid' => (string)$uuid]);
+  //  $statement = $this->connection->prepare('DELETE FROM posts WHERE posts.uuid = :uuid');
+  //  $statement->execute([':uuid' => (string)$uuid]);
 
   //  $result = $statement->fetch(PDO::FETCH_ASSOC);
 
