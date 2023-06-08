@@ -4,6 +4,11 @@ use GeekBrains\LevelTwo\Blog\Commands\CreateUserCommand;
 use GeekBrains\LevelTwo\Blog\Commands\Arguments;
 use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
 use Psr\Log\LoggerInterface;
+use GeekBrains\LevelTwo\Blog\Commands\Users\{CreateUser, UpdateUser};
+use GeekBrains\LevelTwo\Blog\Commands\Posts\DeletePost;
+use GeekBrains\LevelTwo\Blog\Commands\FakeData\PopulateDB;
+use Symfony\Component\Console\Application;
+
 
 
 // Подключаем файл bootstrap.php
@@ -13,9 +18,47 @@ $container = require __DIR__ . '/bootstrap.php';
 // Получаем объект логгера из контейнера
 $logger = $container->get(LoggerInterface::class);
 
-// При помощи контейнера создаём команду
+// Создаём объект приложения
+$application = new Application();
+
+// Перечисляем классы команд
+$commandsClasses = [
+     CreateUser::class,
+     DeletePost::class,
+     UpdateUser::class,
+     PopulateDB::class,
+];
+
+foreach ($commandsClasses as $commandClass) {
+// Посредством контейнера
+// создаём объект команды
+    $command = $container->get($commandClass);
+// Добавляем команду к приложению
+    $application->add($command);
+}
 
 try {
+  // Запускаем приложение
+   $application->run();
+  } catch (Exception $e) {
+    // Логируем информацию об исключении.
+    // Объект исключения передаётся логгеру
+    // с ключом "exception".
+    // Уровень логирования – ERROR
+    $logger->error($e->getMessage(), ['exception' => $e]);
+    echo $e->getMessage();
+  }
+
+
+
+
+
+
+
+
+
+// При помощи контейнера создаём команду
+/*try {
 $command = $container->get(CreateUserCommand::class);
 $command->handle(Arguments::fromArgv($argv));
 } catch (Exception $e) {
@@ -25,7 +68,7 @@ $command->handle(Arguments::fromArgv($argv));
   // Уровень логирования – ERROR
   $logger->error($e->getMessage(), ['exception' => $e]);
   echo $e->getMessage();
-}
+}*/
 
 
 

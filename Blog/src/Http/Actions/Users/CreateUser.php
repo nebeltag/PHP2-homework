@@ -50,8 +50,7 @@ class CreateUser implements ActionInterface
             new Name(               
                $request->jsonBodyField('first_name'),
                $request->jsonBodyField('last_name'),               
-               ),
-            
+               ),       
                 
             );
 
